@@ -19,6 +19,7 @@ import ThreadSharingButton from './thread-sharing-button';
 export const PLUGIN_NAME = plugin.title;
 export const PLUGIN_ID = plugin.name;
 
+const SERVER_URL = AppEnv.config.get('serverUrls.share');
 const _readFile = Promise.promisify(fs.readFile);
 
 const _onDatabaseChange = (change: DatabaseChangeRecord<any>) => {
@@ -45,7 +46,7 @@ export function sharingURLForThread(thread: Thread) {
   }
   const identity = IdentityStore.identity();
   if (!identity) return null;
-  return `https://shared.getmailspring.com/thread/${identity.id}/${metadata.key}`;
+  return `${SERVER_URL}/thread/${identity.id}/${metadata.key}`;
 }
 
 let soon = {};

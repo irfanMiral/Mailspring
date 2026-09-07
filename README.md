@@ -8,6 +8,45 @@ Mailspring's sync engine is spawned by the Electron application and runs locally
 
 ![Mailspring Screenshot](https://github.com/Foundry376/Mailspring/raw/master/screenshots/hero_graphic_mac%402x.png)
 
+## About this fork
+
+This fork exists to run Mailspring against a self-hosted backend instead of
+`getmailspring.com`, while staying current with upstream
+[Foundry376/Mailspring](https://github.com/Foundry376/Mailspring).
+
+It was inspired by [1RandomDev/Mailspring](https://github.com/1RandomDev/Mailspring),
+which pioneered the self-hosted API server configuration this fork also uses.
+That fork was last synced with upstream in late 2024 and is no longer actively
+maintained, so this repository was created to rebase the same small set of
+changes onto current upstream releases and keep them there going forward.
+
+**Changes from upstream:**
+- Configurable API server ([serverUrls](#configuring-the-api-server) in `config.json`), for use with a
+  self-hosted sync backend such as [1RandomDev/mailspring-api](https://github.com/1RandomDev/mailspring-api)
+- Telemetry (crash reporting) disabled
+- Auto-updater disabled (this fork is not distributed through Mailspring's update channel)
+
+**Maintenance:** this fork is periodically rebased onto upstream `master` to
+pull in new features and bug fixes. See [CHANGES.md](CHANGES.md) for the fork-specific
+commit history.
+
+## Configuring the API server
+
+To point MailSync and the Mailspring API client at a self-hosted backend, edit
+the following entries in `config.json` (see
+[dot-mailspring/config.json](app/dot-mailspring/config.json) for the defaults
+shipped in this fork, and your local `~/.config/Mailspring/config.json` /
+`~/.mailspring/config.json` once installed):
+
+```jsonc
+"serverUrls": {
+  "api": "https://id.getmailspring.com",              // Main API URL for Mailspring backend and MailSync
+  "share": "https://shared.getmailspring.com",          // URL for sharing content (currently only applies to thread sharing, other features are configured on the server)
+  "openTracking": "https://link.getmailspring.com",   // Link that gets added to emails when open tracking is enabled
+  "linkTracking": "https://link.getmailspring.com"    // Link that gets added to emails when link tracking is enabled
+}
+```
+
 ## Features
 
 Mailspring comes packed with powerful features like Unified Inbox, Snooze, Send
@@ -20,9 +59,7 @@ your email credentials to the cloud.** For a full list of features, check out
 
 ## Download Mailspring
 
-You can download compiled versions of Mailspring for Windows, Mac OS X, and
-Linux (deb, rpm and snap) from
-[https://getmailspring.com/download](https://getmailspring.com/download).
+Currently this fork has to be built from source.
 
 ## Getting Help
 

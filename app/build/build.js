@@ -441,6 +441,7 @@ async function createRpmInstaller() {
     linuxShareDir: '/usr/local/share/mailspring',
     linuxAssetsDir,
     contentsDir,
+    outputDir,
   };
 
   writeFromTemplate(path.join(linuxAssetsDir, 'redhat', 'mailspring.spec.in'), templateData);
