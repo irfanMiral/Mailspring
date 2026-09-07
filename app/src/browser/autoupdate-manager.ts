@@ -60,9 +60,6 @@ export default class AutoUpdateManager extends EventEmitter {
     }
 
     let host = `updates.getmailspring.com`;
-    if (this.config.get('env') === 'staging') {
-      host = `updates-staging.getmailspring.com`;
-    }
 
     this.feedURL = `https://${host}/check/${params.platform}/${params.arch}/${params.version}/${params.id}/${params.channel}`;
     if (autoUpdater) {
@@ -71,6 +68,12 @@ export default class AutoUpdateManager extends EventEmitter {
   };
 
   setupAutoUpdater() {
+    // Disabled: this fork isn't distributed through Mailspring's update
+    // channel (updates.getmailspring.com), so auto-update has nothing valid
+    // to check against. Left in place below in case this fork ever stands up
+    // its own update feed.
+    return;
+
     if (process.platform === 'win32') {
       const Impl = require('./autoupdate-impl-win32').default;
       autoUpdater = new Impl();

@@ -33,18 +33,8 @@ let IdentityStore = null;
 // server option
 
 export function rootURLForServer(server: 'identity') {
-  const env = AppEnv.config.get('env');
-
-  if (!['development', 'staging', 'production'].includes(env)) {
-    throw new Error(`rootURLForServer: ${env} is not a valid environment.`);
-  }
-
   if (server === 'identity') {
-    return {
-      development: 'http://localhost:5101',
-      staging: 'https://id-staging.getmailspring.com',
-      production: 'https://id.getmailspring.com',
-    }[env];
+    return AppEnv.config.get('serverUrls.api');
   }
   throw new Error('rootURLForServer: You must provide a valid `server` value');
 }
