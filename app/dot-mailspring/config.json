@@ -1,6 +1,11 @@
 {
   "*": {
-    "env": "production",
+    "serverUrls": {
+      "api": "https://id.getmailspring.com",
+      "share": "https://shared.getmailspring.com",
+      "openTracking": "https://link.getmailspring.com",
+      "linkTracking": "https://link.getmailspring.com"
+    },
     "core": {
       "themes": [
         "ui-light"

@@ -1,15 +1,9 @@
-var ErrorLogger, _, app;
+var ErrorLogger, _;
 
 let ipcRenderer = null;
 if (process.type === 'renderer') {
   ipcRenderer = require('electron').ipcRenderer;
-  app = require('@electron/remote').app;
-} else {
-  app = require('electron').app;
 }
-
-var appVersion = app.getVersion();
-var SentryErrorReporter = require('./error-logger-extensions/sentry-error-reporter');
 
 // A globally available ErrorLogger that can report errors to various
 // sources and enhance error functionality.
@@ -33,19 +27,15 @@ module.exports = ErrorLogger = (function () {
     this.inDevMode = args.inDevMode;
     this.resourcePath = args.resourcePath;
 
-    this._startCrashReporter();
+    // Crash reporting and Sentry are disabled fork-wide: this app talks to a
+    // self-hosted backend, not getmailspring.com, so upstream's telemetry
+    // endpoints aren't ours to send data to.
 
     this._extendErrorObject();
 
     this._extendNativeConsole();
 
-    this.extensions = [
-      new SentryErrorReporter({
-        inSpecMode: args.inSpecMode,
-        inDevMode: args.inDevMode,
-        resourcePath: args.resourcePath,
-      }),
-    ];
+    this.extensions = [];
 
     if (this.inSpecMode) {
       return;
@@ -154,23 +144,6 @@ module.exports = ErrorLogger = (function () {
   /////////////////////////////////////////////////////////////////////
   ////////////////////////// PRIVATE METHODS //////////////////////////
   /////////////////////////////////////////////////////////////////////
-
-  ErrorLogger.prototype._startCrashReporter = function (args) {
-    if (process.type === 'renderer') {
-      return;
-    }
-    require('electron').crashReporter.start({
-      productName: 'Mailspring',
-      companyName: 'Mailspring',
-      submitURL: `https://id.getmailspring.com/report-crash?ver=${appVersion}&platform=${process.platform}`,
-      uploadToServer: true,
-      autoSubmit: true,
-      extra: {
-        ver: appVersion,
-        platform: process.platform,
-      },
-    });
-  };
 
   ErrorLogger.prototype._extendNativeConsole = function (args) {
     console.debug = this._consoleDebug.bind(this);

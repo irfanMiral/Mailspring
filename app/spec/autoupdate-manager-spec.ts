@@ -10,9 +10,6 @@ describe('AutoUpdateManager', function () {
         if (key === 'identity.id') {
           return this.mailspringIdentityId;
         }
-        if (key === 'env') {
-          return 'production';
-        }
       },
       onDidChange: (key, callback) => {
         return callback();

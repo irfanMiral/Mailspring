@@ -172,7 +172,7 @@ export function removeTrackingPixels(message: Message) {
     // reply or a bounce, our read receipt could still be in the body and could
     // trigger additional opens. (isFromMe is not sufficient!) [BG NOTE "HMID"]
     if (
-      imageURL.includes(`getmailspring.com/open/${message.accountId.toUpperCase()}`) ||
+      imageURL.includes(`${AppEnv.config.get('serverUrls.openTracking')}/open/${message.accountId.toUpperCase()}`) ||
       imageURL.includes(`me=${encodeURIComponent(message.accountId)}`)
     ) {
       return true;
