@@ -177,7 +177,7 @@ function GenericInfoBlock(props, prefixStyle: any = PrefixStyles.None) {
         )}
         {props.twitterHandle && (
           <a
-            href={`https://twitter.com/${props.twitterHandle}`}
+            href={props.twitterHandle}
             title="Twitter"
             style={{ marginRight: 8, color: props.tintColor }}
           >
@@ -495,7 +495,7 @@ const Templates = [
                   )}
                   {props.twitterHandle && (
                     <a
-                      href={`https://twitter.com/${props.twitterHandle}`}
+                      href={props.twitterHandle}
                       title="Twitter"
                       style={{ marginRight: 8, color: props.tintColor }}
                     >
