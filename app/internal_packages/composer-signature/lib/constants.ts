@@ -77,16 +77,21 @@ export const ResolveSignatureData = (data: Record<string, string>) => {
     }
   });
 
+  // If the user already entered a full URL (e.g. a custom short-link redirect
+  // rather than a bare username), trust it as-is instead of trying to rebuild
+  // a linkedin.com/twitter.com/etc URL out of it.
+  const isFullURL = (value: string) => /^[a-z][a-z0-9+.-]*:\/\//i.test(value);
+
   // sanitize linkedin handle
   if (data.linkedinURL) {
-    if (!data.linkedinURL.includes('linkedin.com')) {
+    if (!isFullURL(data.linkedinURL)) {
       data.linkedinURL = `https://www.linkedin.com/in/${data.linkedinURL}`;
     }
   }
 
   // sanitize medium handle
   if (data.mediumURL) {
-    if (!data.mediumURL.includes('medium.com')) {
+    if (!isFullURL(data.mediumURL)) {
       if (!data.mediumURL.startsWith('@')) {
         data.mediumURL = `@${data.mediumURL}`;
       }
@@ -96,20 +101,25 @@ export const ResolveSignatureData = (data: Record<string, string>) => {
 
   // sanitize github username
   if (data.githubURL) {
-    if (!data.githubURL.includes('github.com')) {
+    if (!isFullURL(data.githubURL)) {
       data.githubURL = `https://www.github.com/${data.githubURL}`;
     }
   }
-  // sanitize twitter handle
+  // sanitize twitter handle - resolved to a full URL here (rather than left as a bare
+  // handle) so a full custom URL passes through untouched, matching the other fields.
   if (data.twitterHandle) {
-    if (data.twitterHandle.includes('/')) {
-      // a url was likely entered, lets grab the user (last portion).
-      const split = data.twitterHandle.split('/');
-      data.twitterHandle = split[split.length - 1];
-    }
-    if (data.twitterHandle[0] === '@') {
-      // an at symbol was added, lets remove it.
-      data.twitterHandle = data.twitterHandle.slice(1);
+    if (!isFullURL(data.twitterHandle)) {
+      let handle = data.twitterHandle;
+      if (handle.includes('/')) {
+        // a bare url (no scheme) was likely entered, e.g. "twitter.com/user" - grab the user.
+        const split = handle.split('/');
+        handle = split[split.length - 1];
+      }
+      if (handle[0] === '@') {
+        // an at symbol was added, lets remove it.
+        handle = handle.slice(1);
+      }
+      data.twitterHandle = `https://twitter.com/${handle}`;
     }
   }
 
