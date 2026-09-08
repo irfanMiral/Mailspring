@@ -3,66 +3,36 @@ import querystring from 'querystring';
 
 // Static components
 
+// Self-hosted alongside thread-sharing assets rather than hotlinked from
+// getmailspring.com, so these signature icons work with a custom API server
+// and can be kept current (e.g. Twitter -> X) independently of upstream.
+const SIGNATURE_ASSETS_URL = `${AppEnv.config.get('serverUrls.share')}/signature-assets`;
+
 const FB_SHARE = (
-  <img
-    src="https://www.getmailspring.com/signature-assets/fb.gif"
-    width="13"
-    height="13"
-    alt="Facebook"
-  />
+  <img src={`${SIGNATURE_ASSETS_URL}/fb.gif`} width="13" height="13" alt="Facebook" />
 );
 
 const MEDIUM_SHARE = (
-  <img
-    src="https://www.getmailspring.com/signature-assets/medium.gif"
-    width="13"
-    height="13"
-    alt="Medium"
-  />
+  <img src={`${SIGNATURE_ASSETS_URL}/medium.gif`} width="13" height="13" alt="Medium" />
 );
 
 const GITHUB_SHARE = (
-  <img
-    src="https://www.getmailspring.com/signature-assets/github.gif"
-    width="13"
-    height="13"
-    alt="Github"
-  />
+  <img src={`${SIGNATURE_ASSETS_URL}/github.gif`} width="13" height="13" alt="Github" />
 );
 
 const YOUTUBE_SHARE = (
-  <img
-    src="https://www.getmailspring.com/signature-assets/youtube.gif"
-    width="13"
-    height="13"
-    alt="YouTube"
-  />
+  <img src={`${SIGNATURE_ASSETS_URL}/youtube.gif`} width="13" height="13" alt="YouTube" />
 );
 
 const TWITTER_SHARE = (
-  <img
-    src="https://www.getmailspring.com/signature-assets/twitter.gif"
-    width="13"
-    height="13"
-    alt="Twitter"
-  />
+  <img src={`${SIGNATURE_ASSETS_URL}/twitter.png`} width="13" height="13" alt="Twitter" />
 );
 const LINKEDIN_SHARE = (
-  <img
-    src="https://www.getmailspring.com/signature-assets/linkedin.gif"
-    width="13"
-    height="13"
-    alt="LinkedIn"
-  />
+  <img src={`${SIGNATURE_ASSETS_URL}/linkedin.gif`} width="13" height="13" alt="LinkedIn" />
 );
 
 const INSTAGRAM_SHARE = (
-  <img
-    src="https://www.getmailspring.com/signature-assets/instagram.gif"
-    width="13"
-    height="13"
-    alt="Instagram"
-  />
+  <img src={`${SIGNATURE_ASSETS_URL}/instagram.gif`} width="13" height="13" alt="Instagram" />
 );
 
 function widthAndHeightForPhotoURL(
