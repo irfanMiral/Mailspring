@@ -36,6 +36,37 @@ changes onto current upstream releases and keeps maintaining them.
   absolute path instead. The build also disables the `check-rpaths` QA check,
   since the prebuilt `mailsync.bin` binary ships with build-machine RPATHs
   that this check otherwise flags as fatal.
+- **GPU flags on the Linux launcher** — `Mailspring.desktop.in`'s `Exec` lines
+  now pass `--ignore-gpu-blocklist --enable-gpu-rasterization
+  --enable-zero-copy`. Chromium's built-in GPU blocklist disables
+  acceleration on some driver/kernel combinations even when the underlying
+  hardware and Mesa driver work fine (verified locally against an Intel HD
+  5600/Broadwell iGPU with working direct rendering).
+
+## Known limitation: Linux tray context menu / click-to-restore
+
+On at least KDE Plasma (X11), the tray icon appears but right-click (context
+menu) and left-click (restore window) do nothing. This is **not** a bug in
+this fork or introduced by any change here — verified by introspecting the
+D-Bus object Electron registers for the tray:
+
+```
+$ gdbus introspect --dest org.freedesktop.StatusNotifierItem-<pid>-1 --object-path / --recurse
+node /StatusNotifierItem { };        # no org.kde.StatusNotifierItem interface
+node /org/chromium/DbusMenu { };     # no dbusmenu interface either
+```
+
+The item registers with the watcher and the icon renders, but Electron never
+populates the D-Bus interfaces the host needs to call `Activate` (click) or
+`ContextMenu`/read the `Menu` property (right-click) — both silently fail
+with nothing to call. This matches upstream
+[electron/electron#54181](https://github.com/electron/electron/issues/54181)
+("hollow StatusNotifierItem"), caused by a Chromium D-Bus multiplexer
+refactor. Confirmed present, with identical hollow introspection output,
+across Electron 42, 43.6.0, this fork's pinned 44.3.0, and the latest stable
+44.4.5 as of testing — there is currently no released Electron version that
+fixes it. No workaround is available at the application level; this will
+need to be revisited once upstream Electron/Chromium fixes it.
 
 ## Maintenance
 
