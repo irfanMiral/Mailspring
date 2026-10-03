@@ -36,12 +36,18 @@ changes onto current upstream releases and keeps maintaining them.
   absolute path instead. The build also disables the `check-rpaths` QA check,
   since the prebuilt `mailsync.bin` binary ships with build-machine RPATHs
   that this check otherwise flags as fatal.
-- **GPU flags on the Linux launcher** — `Mailspring.desktop.in`'s `Exec` lines
-  now pass `--ignore-gpu-blocklist --enable-gpu-rasterization
-  --enable-zero-copy`. Chromium's built-in GPU blocklist disables
-  acceleration on some driver/kernel combinations even when the underlying
-  hardware and Mesa driver work fine (verified locally against an Intel HD
-  5600/Broadwell iGPU with working direct rendering).
+- **GPU flags on the Linux launcher — tried and reverted.** `--ignore-gpu-blocklist
+  --enable-gpu-rasterization --enable-zero-copy` were added to try to force
+  hardware acceleration, then reverted after causing exactly the kind of crash
+  they were meant to avoid: on this machine the sandboxed GPU process fails to
+  launch (`GPU process launch failed: error_code=1002`), and `--ignore-gpu-blocklist`
+  stops Chromium from falling back to software rendering, so it keeps retrying
+  until `gpu_data_manager_impl_private.cc` hits `FATAL: GPU process isn't usable.
+  Goodbye.` and takes down the whole app (all accounts' mailsync processes
+  included) — confirmed via `journalctl`/`coredumpctl` (SIGTRAP, `status=5/TRAP`).
+  Electron's default GPU blocklist exists specifically to avoid this failure
+  mode; don't re-add these flags without first fixing why the sandboxed GPU
+  process can't launch on the target machine.
 
 ## Known limitation: Linux tray context menu / click-to-restore
 
